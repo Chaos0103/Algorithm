@@ -3,14 +3,13 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 class Solution {
-
-    private static final String[][] precedences = {
+    private static final String[][] OPERATIONS = {
         "+-*".split(""),
         "+*-".split(""),
-        "-+*".split(""),
-        "-*+".split(""),
         "*+-".split(""),
-        "*-+".split("")
+        "*-+".split(""),
+        "-*+".split(""),
+        "-+*".split("")
     };
 
     private long calculate(long lhs, long rhs, String op) {
@@ -26,8 +25,8 @@ class Solution {
         }
     }
 
-    private long calculate(List<String> tokens, String[] precedence) {
-        for (String op : precedence) {
+    private long calculate(List<String> tokens, String[] operation) {
+        for (String op : operation) {
             for (int i = 0; i < tokens.size(); i++) {
                 if (tokens.get(i).equals(op)) {
                     long lhs = Long.parseLong(tokens.get(i - 1));
@@ -52,8 +51,8 @@ class Solution {
         }
 
         long max = 0;
-        for (String[] precedence : precedences) {
-            long value = Math.abs(calculate(new ArrayList<>(tokens), precedence));
+        for (String[] operation : OPERATIONS) {
+            long value = Math.abs(calculate(new ArrayList<>(tokens), operation));
             max = Math.max(max, value);
         }
 
