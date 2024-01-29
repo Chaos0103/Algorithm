@@ -4,46 +4,41 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
+
+    private static final int TOTAL_PARTITION_COUNT = 15;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        String str = br.readLine();
         StringBuilder builder = new StringBuilder();
 
-        int count = 8;
-        char[] arr = str.toCharArray();
-        for (char ch : arr) {
-            if (ch == ':') {
-                count--;
-            }
-        }
-        if (arr[0] == ':') {
+        String str = br.readLine();
+        StringTokenizer token = new StringTokenizer(str, ":", true);
+
+        int count = Math.round((float) (TOTAL_PARTITION_COUNT - token.countTokens()) / 2);
+
+        if (str.startsWith(":")) {
             builder.append("0000");
         }
 
-        StringTokenizer hex = new StringTokenizer(str, ":", true);
-
-        boolean flag = false;
-        while (hex.hasMoreTokens()) {
-            String token = hex.nextToken();
-            if (!token.equals(":")) {
-                int num = Integer.parseInt(token, 16);
-                builder.append(String.format("%04x", num));
-                flag = false;
+        String prev = "";
+        while (token.hasMoreTokens()) {
+            String part = token.nextToken();
+            if (part.equals(":")) {
+                if (prev.equals(":")) {
+                    builder.append("0000:".repeat(count));
+                } else {
+                    builder.append(part);
+                }
+                prev = part;
                 continue;
             }
 
-            if (flag) {
-                builder.append("0000:".repeat(count));
-                flag = false;
-                continue;
-            }
-
-            flag = true;
-            builder.append(token);
+            int num = Integer.parseInt(part, 16);
+            builder.append(String.format("%04x", num));
+            prev = part;
         }
 
-        if (arr[arr.length - 1] == ':') {
+        if (str.endsWith(":")) {
             builder.append("0000");
         }
 
