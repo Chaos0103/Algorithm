@@ -1,14 +1,11 @@
 class Solution {
     public int[] solution(long n) {
-        String numberToString = String.valueOf(n);
-        StringBuilder builder = new StringBuilder(numberToString);
+        StringBuilder builder = new StringBuilder(Long.toString(n));
         builder.reverse();
-
-        int[] answer = new int[builder.length()];
-        String number = builder.toString();
-        for (int i = 0; i < builder.length(); i++) {
-            char ch = number.charAt(i);
-            answer[i] = Character.getNumericValue(ch);
+        char[] arr = builder.toString().toCharArray();
+        int[] answer = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            answer[i] = Character.getNumericValue(arr[i]);
         }
         return answer;
     }
