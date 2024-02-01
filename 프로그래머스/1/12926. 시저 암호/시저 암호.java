@@ -1,25 +1,17 @@
 class Solution {
     public String solution(String s, int n) {
         StringBuilder builder = new StringBuilder();
-        char[] arr = s.toCharArray();
-
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == ' ') {
-                builder.append(arr[i]);
-                continue;
-            }
-
-            if ('a' <= arr[i] && arr[i] <= 'z') {
-                char ch = (char) (((arr[i] - 'a' + n) % 26) + 'a');
-                builder.append(ch);
-            }
-
-            if ('A' <= arr[i] && arr[i] <= 'Z') {
-                char ch = (char) (((arr[i] - 'A' + n) % 26) + 'A');
-                builder.append(ch);
-            }
+        for (char c : s.toCharArray()) {
+            builder.append(getMovedCharacter(c, n));
         }
-
         return builder.toString();
+    }
+
+    private char getMovedCharacter(char c, int n) {
+        if (Character.isSpaceChar(c)) {
+            return c;
+        }
+        char root = Character.isUpperCase(c) ? 'A' : 'a';
+        return (char) ((c - root + n) % 26 + root);
     }
 }
