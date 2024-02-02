@@ -1,25 +1,20 @@
 class Solution {
-
-    private int removeZero(String binary) {
-        int count = 0;
-        for (char c : binary.toCharArray()) {
-            if (c == '1') {
-                count++;
-            }
-        }
-        return count;
+    private String removeZero(String s) {
+        return s.replace("0", "");        
     }
     
     public int[] solution(String s) {
-        int[] answer = {0, 0};
+        int count = 0;
+        int zeroCount = 0;
 
         while (!s.equals("1")) {
-            int length = removeZero(s);
-            answer[1] += s.length() - length;
-            s = Integer.toString(length, 2);
-            answer[0]++;
+            String removedZero = removeZero(s);
+            zeroCount += s.length() - removedZero.length();
+
+            s = Integer.toString(removedZero.length(), 2);
+            count++;
         }
 
-        return answer;
+        return new int[]{count, zeroCount};
     }
 }
