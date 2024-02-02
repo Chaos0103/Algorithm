@@ -1,41 +1,39 @@
 class Solution {
     public int solution(String s) {
-        int answer = 1000;
-        int length = s.length();
-
-        if (length == 1) {
+        if (s.length() == 1) {
             return 1;
         }
+        
+        int answer = Integer.MAX_VALUE;
 
-        for (int step = 1; step <= (length / 2); step++) {
-            StringBuilder builder = new StringBuilder();
+        for (int step = 1; step <= s.length() / 2; step++) {
             String prev = s.substring(0, step);
+            StringBuilder builder = new StringBuilder();
             int count = 1;
-            for (int i = step; i <= length; i += step) {
-                String target;
-                if (i + step >= length) {
-                    target = s.substring(i);
-                } else {
-                    target = s.substring(i, i + step);
-                }
-
+            int i;
+            for (i = step; i <= s.length() - step; i += step) {
+                String target = s.substring(i, i + step);
                 if (prev.equals(target)) {
                     count++;
-                    continue;
-                }
+                } else {
+                    if (count > 1) {
+                        builder.append(count);
+                    }
+                    builder.append(prev);
 
-                if (count > 1) {
-                    builder.append(count);
+                    count = 1;
+                    prev = target;
                 }
-                builder.append(prev);
-                prev = target;
-                count = 1;
             }
 
             if (count > 1) {
                 builder.append(count);
             }
             builder.append(prev);
+
+            if (s.length() % step > 0) {
+                builder.append(s.substring(s.length() - s.length() % step));
+            }
 
             answer = Math.min(answer, builder.length());
         }
