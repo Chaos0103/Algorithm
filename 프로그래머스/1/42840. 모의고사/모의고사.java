@@ -1,37 +1,38 @@
 import java.util.ArrayList;
+import java.util.List;
 
 class Solution {
 
-    private static final int[][] arr = {
+    private static final int[][] METHODS = {
         {1, 2, 3, 4, 5},
         {2, 1, 2, 3, 2, 4, 2, 5},
         {3, 3, 1, 1, 2, 2, 4, 4, 5, 5}
     };
 
     public int[] solution(int[] answers) {
+        int[] counts = new int[3];
         int max = 0;
-        int[] count = new int[3];
+
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < answers.length; j++) {
-                if (answers[j] == arr[i][j % arr[i].length]) {
-                    count[i]++;
+            int index = 0;
+            int size = METHODS[i].length;
+            for (int answer : answers) {
+                if (answer == METHODS[i][index++ % size]) {
+                    counts[i]++;
                 }
             }
-            max = Math.max(max, count[i]);
+            max = Math.max(max, counts[i]);
         }
 
-        ArrayList<Integer> answer = new ArrayList<>();
+        List<Integer> peoples = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            if (max == count[i]) {
-                answer.add(i + 1);
+            if (counts[i] == max) {
+                peoples.add(i + 1);
             }
         }
 
-        int[] result = new int[answer.size()];
-        for (int i = 0; i < answer.size(); i++) {
-            result[i] = answer.get(i);
-        }
-
-        return result;
+        return peoples.stream()
+            .mapToInt(people -> people)
+            .toArray();
     }
 }
