@@ -1,20 +1,20 @@
 class Solution {
-    private int getBrown(int width, int height) {
-        return (width * 2) + (height * 2) - 4;
-    }
-
     public int[] solution(int brown, int yellow) {
+        int[] answer = {};
         int total = brown + yellow;
-        for (int height = 3; height < total / 2; height++) {
-            if (total % height != 0) {
+        for (int height = 3; height < 5000; height++) {
+            if (total % height > 0) {
                 continue;
             }
+
             int width = total / height;
-            int brownCount = getBrown(width, height);
-            if (brownCount == brown) {
-                return new int[]{width, height};
+            int count = (width * 2 + height * 2) - 4;
+            if (count == brown) {
+                answer = new int[]{width, height};
+                break;
             }
         }
-        return new int[]{};
+
+        return answer;
     }
 }
