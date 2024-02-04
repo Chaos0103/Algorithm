@@ -3,39 +3,41 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 class Solution {
+
     private static final String[][] OPERATIONS = {
         "+-*".split(""),
         "+*-".split(""),
-        "*+-".split(""),
-        "*-+".split(""),
         "-*+".split(""),
-        "-+*".split("")
+        "-+*".split(""),
+        "*-+".split(""),
+        "*+-".split("")
     };
 
-    private long calculate(long lhs, long rhs, String op) {
-        switch (op) {
-            case "+":
-                return lhs + rhs;
-            case "-":
-                return lhs - rhs;
-            case "*":
-                return lhs * rhs;
-            default:
-                return 0;
-        }
-    }
-
-    private long calculate(List<String> tokens, String[] operation) {
-        for (String op : operation) {
+    private long calculate(List<String> tokens, int index) {
+        String[] operations = OPERATIONS[index];
+        for (String operation : operations) {
             for (int i = 0; i < tokens.size(); i++) {
-                if (tokens.get(i).equals(op)) {
-                    long lhs = Long.parseLong(tokens.get(i - 1));
-                    long rhs = Long.parseLong(tokens.get(i + 1));
-                    long result = calculate(lhs, rhs, op);
+                String token = tokens.get(i);
+                if (token.equals(operation)) {
+                    long left = Long.parseLong(tokens.get(i - 1));
+                    long right = Long.parseLong(tokens.get(i + 1));
+                    long result = 0;
+                    switch (operation) {
+                        case "+":
+                            result = left + right;
+                            break;
+                        case "-":
+                            result = left - right;
+                            break;
+                        case "*":
+                            result = left * right;
+                            break;
+                    }
+                    tokens.remove(i + 1);
+                    tokens.remove(i);
                     tokens.remove(i - 1);
-                    tokens.remove(i - 1);
-                    tokens.remove(i - 1);
-                    tokens.add(i - 1, String.valueOf(result));
+
+                    tokens.add(i - 1, Long.toString(result));
                     i -= 2;
                 }
             }
@@ -44,18 +46,18 @@ class Solution {
     }
 
     public long solution(String expression) {
-        StringTokenizer tokenizer = new StringTokenizer(expression, "+-*", true);
         List<String> tokens = new ArrayList<>();
-        while (tokenizer.hasMoreTokens()) {
-            tokens.add(tokenizer.nextToken());
+        StringTokenizer token = new StringTokenizer(expression, "+-*", true);
+        while (token.hasMoreTokens()) {
+            tokens.add(token.nextToken());
         }
 
-        long max = 0;
-        for (String[] operation : OPERATIONS) {
-            long value = Math.abs(calculate(new ArrayList<>(tokens), operation));
-            max = Math.max(max, value);
+        long answer = 0;
+        for (int i = 0; i < 6; i++) {
+            long result = calculate(new ArrayList<>(tokens), i);
+            answer = Math.max(answer, Math.abs(result));
         }
 
-        return max;
+        return answer;
     }
 }
