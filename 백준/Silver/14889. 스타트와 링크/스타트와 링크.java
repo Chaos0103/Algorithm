@@ -1,73 +1,67 @@
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.stream.IntStream;
 
-class Combination {
-    private int n;
-    private int r;
-    private int[] now; // 현재 조합
-    private ArrayList<ArrayList<Integer>> result; // 모든 조합
+public class Main {
 
-    public ArrayList<ArrayList<Integer>> getResult() {
-        return result;
-    }
+    private static int n;
+    private static final List<List<Integer>> comb = new ArrayList<>();
 
-    public Combination(int n, int r) { //전체 갯수, 뽑을 갯수
-        this.n = n;
-        this.r = r;
-        this.now = new int[r];
-        this.result = new ArrayList<ArrayList<Integer>>();
-    }
-
-    public void combination(ArrayList<Integer> arr, int depth, int index, int target) {
-        if (depth == r) {
-            ArrayList<Integer> temp = new ArrayList<>();
-            for (int i = 0; i < now.length; i++) {
-                temp.add(arr.get(now[i]));
+    private static void comb(int[] arr, boolean[] visited, int start, int depth) {
+        if (depth == n / 2) {
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < arr.length; i++) {
+                if (visited[i]) {
+                    temp.add(i);
+                }
             }
-            result.add(temp);
+            comb.add(temp);
             return;
         }
-        if (target == n) return;
-        now[index] = target;
-        combination(arr, depth + 1, index + 1, target + 1);
-        combination(arr, depth, index, target + 1);
+        for (int i = start; i < arr.length; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                comb(arr, visited, i + 1, depth + 1);
+                visited[i] = false;
+            }
+        }
     }
-}
-public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
 
-		int n = sc.nextInt();
-		int[][] data = new int[n][n];
-		
-		for(int i=0;i<n;i++) {
-			for(int j=0;j<n;j++) {
-				data[i][j] = sc.nextInt();
-			}
-		}
-		
-		ArrayList<Integer> numbers = new ArrayList<>();
-		for(int i=0;i<n;i++) {
-			numbers.add(i);
-		}
-		Combination com = new Combination(n, n/2);
-		com.combination(numbers, 0, 0, 0);
-		ArrayList<ArrayList<Integer>> combinationResult = com.getResult();
-		
-		int result = Integer.MAX_VALUE;
-		for(ArrayList<Integer> res : combinationResult) {
-			int startTeam = 0;
-			int linkTeam = 0;
-			for(int i=0; i<n; i++) {
-				for(int j=0; j<n; j++) {
-					if (res.contains(i) && res.contains(j)) {
-						startTeam += data[i][j];
-					} else if (!res.contains(i) && !res.contains(j)){
-						linkTeam += data[i][j];
-					}
-				}
-			}
-			result = Math.min(result, Math.abs(startTeam - linkTeam));
-		}
-		System.out.println(result);
-	}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        n = Integer.parseInt(br.readLine());
+        int[][] abilityValues = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                abilityValues[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        int[] arr = IntStream.range(0, n).toArray();
+        comb(arr, new boolean[n], 0, 0);
+
+        int result = Integer.MAX_VALUE;
+        for (List<Integer> data : comb) {
+            int startTeam = 0;
+            int linkTeam = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (data.contains(i) && data.contains(j)) {
+                        startTeam += abilityValues[i][j];
+                    } else if (!data.contains(i) && !data.contains(j)) {
+                        linkTeam += abilityValues[i][j];
+                    }
+                }
+            }
+            result = Math.min(result, Math.abs(startTeam - linkTeam));
+        }
+
+        System.out.println(result);
+    }
 }
