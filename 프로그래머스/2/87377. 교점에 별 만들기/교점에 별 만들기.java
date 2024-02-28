@@ -1,74 +1,81 @@
 import java.util.ArrayList;
-
-class Point {
-    private final long x;
-    private final long y;
-
-    public Point(long x, long y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public long getX() {
-        return x;
-    }
-
-    public long getY() {
-        return y;
-    }
-}
+import java.util.List;
 
 class Solution {
-    public String[] solution(int[][] line) {
-        long maxPointX = Long.MIN_VALUE;
-        long minPointX = Long.MAX_VALUE;
-        long maxPointY = Long.MIN_VALUE;
-        long minPointY = Long.MAX_VALUE;
+    //좌표를 저장할 클래스
+    private static class Point {
+        public long x;
+        public long y;
 
-        ArrayList<Point> points = new ArrayList<>();
-        for (int i = 0; i < line.length; i++) {
-            for (int j = i + 1; j < line.length; j++) {
-                Point point = calculateCrossPoint(line[i], line[j]);
-                if (point != null) {
-                    points.add(point);
-                    maxPointX = Math.max(maxPointX, point.getX());
-                    minPointX = Math.min(minPointX, point.getX());
-
-                    maxPointY = Math.max(maxPointY, point.getY());
-                    minPointY = Math.min(minPointY, point.getY());
-                }
-            }
+        public Point(long x, long y) {
+            this.x = x;
+            this.y = y;
         }
-
-        boolean[][] arr = new boolean[(int) (maxPointY - minPointY + 1)][(int) (maxPointX - minPointX + 1)];
-        for (Point point : points) {
-            arr[(int) (maxPointY - point.getY())][(int) (point.getX() - minPointX)] = true;
-        }
-
-        String[] answer = new String[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            StringBuilder builder = new StringBuilder();
-            for (boolean d : arr[i]) {
-                builder.append(d ? "*" : ".");
-            }
-            answer[i] = builder.toString();
-        }
-
-        return answer;
     }
 
+    //1. 교점을 구하기
     private Point calculateCrossPoint(int[] line1, int[] line2) {
-        long under = (long) line1[0] * line2[1] - (long) line1[1] * line2[0];
-
-
-        double x = (double) ((long) line1[1] * line2[2] - (long) line1[2] * line2[1]) / under;
-        double y = (double) ((long) line1[2] * line2[0] - (long) line1[0] * line2[2]) / under;
-
+        long a = line1[0];
+        long b = line1[1];
+        long e = line1[2];
+        long c = line2[0];
+        long d = line2[1];
+        long f = line2[2];
+        double x = (double) (b * f - e * d) / (a * d - b * c);
+        double y = (double) (e * c - a * f) / (a * d - b * c);
+        //2. 교점이 정수인 경우 저장하기
         if (x % 1 != 0 || y % 1 != 0) {
             return null;
         }
 
         return new Point((long) x, (long) y);
     }
-}
 
+    public String[] solution(int[][] line) {
+        long maxX = Long.MIN_VALUE;
+        long minX = Long.MAX_VALUE;
+
+        long maxY = Long.MIN_VALUE;
+        long minY = Long.MAX_VALUE;
+
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < line.length; i++) {
+            for (int j = i + 1; j < line.length; j++) {
+                Point point = calculateCrossPoint(line[i], line[j]);
+                if (point != null) {
+                    points.add(point);
+                    //3. x, y축 최댓값, 최솟값 구하기
+                    maxX = Math.max(maxX, point.x);
+                    minX = Math.min(minX, point.x);
+
+                    maxY = Math.max(maxY, point.y);
+                    minY = Math.min(minY, point.y);
+                }
+            }
+        }
+
+        //4. 별 찍을 배열 생성
+        boolean[][] star = new boolean[(int) (maxY - minY + 1)][(int) (maxX - minX + 1)];
+
+        //5. 별 찍기
+        for (Point point : points) {
+            star[(int) (point.y - minY)][(int) (point.x - minX)] = true;
+        }
+
+        //6. String 배열로 변환
+        String[] answer = new String[star.length];
+        for (int i = 0; i < star.length; i++) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < star[i].length; j++) {
+                if (star[i][j]) {
+                    sb.append("*");
+                } else {
+                    sb.append(".");
+                }
+            }
+            answer[answer.length - i - 1] = sb.toString();
+        }
+
+        return answer;
+    }
+}
