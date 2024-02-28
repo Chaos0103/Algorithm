@@ -1,75 +1,86 @@
-import java.util.*;
+import java.awt.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 class Solution {
 
-    private static final int[] dy = {0, 0, 1, -1};
-    private static final int[] dx = {1, -1, 0, 0};
+    private static final int[][] DIRECTION = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-    public int[] solution(String[][] places) {
-        int[] answer = new int[5];
+    private static class Point {
+        public int x;
+        public int y;
+        public int depth;
 
-        Arrays.fill(answer, 1);
+        public Point(int x, int y, int depth) {
+            this.x = x;
+            this.y = y;
+            this.depth = depth;
+        }
+    }
 
+    private char[][] toArray(String[] place) {
+        char[][] arr = new char[5][5];
         for (int i = 0; i < 5; i++) {
-            char[][] arr = toArray(places[i]);
-            for (int y = 0; y < 5; y++) {
-                for (int x = 0; x < 5; x++) {
-                    if (arr[y][x] == 'P' && !bfs(new int[]{y, x}, arr)) {
-                        answer[i] = 0;
-                    }
+            arr[i] = place[i].toCharArray();
+        }
+        return arr;
+    }
+
+    private boolean isCorrect(char[][] room) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (room[i][j] == 'P' && !isValid(room, j, i)) {
+                    return false;
                 }
             }
         }
-
-        return answer;
+        return true;
     }
 
-    private boolean bfs(int[] position, char[][] arr) {
-        int[][] result = new int[5][5];
+    private boolean isValid(char[][] room, int x, int y) {
+        Queue<Point> points = new LinkedList<>();
+        points.add(new Point(x, y, 0));
+        while (!points.isEmpty()) {
+            Point point = points.poll();
 
-        Queue<int[]> q = new LinkedList<>();
-        q.offer(position);
-
-        while (!q.isEmpty()) {
-            int[] current = q.poll();
-            if (result[current[0]][current[1]] >= 2) {
-                break;
+            if (point.depth >= 2) {
+                continue;
             }
 
             for (int i = 0; i < 4; i++) {
-                int ny = current[0] + dy[i];
-                int nx = current[1] + dx[i];
-                if (ny < 0 || 5 <= ny || nx < 0 || 5 <= nx) {
+                int nx = point.x + DIRECTION[i][0];
+                int ny = point.y + DIRECTION[i][1];
+
+                if (nx == x && ny == y) {
                     continue;
                 }
 
-                if (result[ny][nx] != 0) {
+                if (!(0 <= nx && nx < 5 && 0 <= ny && ny < 5)) {
                     continue;
                 }
 
-                if (arr[ny][nx] == 'X') {
-                    continue;
-                }
-
-                if (!(position[0] == ny && position[1] == nx) && arr[ny][nx] == 'P') {
+                if (room[ny][nx] == 'P') {
                     return false;
                 }
-                
-                result[ny][nx] = result[current[0]][current[1]] + 1;
-                q.offer(new int[]{ny, nx});
+
+                if (room[ny][nx] == 'O') {
+                    points.add(new Point(nx, ny, point.depth + 1));
+                }
             }
         }
 
         return true;
     }
 
-    private char[][] toArray(String[] place) {
-        char[][] arr = new char[5][5];
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                arr[i][j] = place[i].charAt(j);
-            }
+    public int[] solution(String[][] places) {
+        int[] answer = new int[5];
+        for (int i = 0; i < places.length; i++) {
+            char[][] room = toArray(places[i]);
+
+            answer[i] = isCorrect(room) ? 1 : 0;
         }
-        return arr;
+
+        return answer;
     }
 }
