@@ -22,20 +22,16 @@ public class Main {
         int right = n - 1;
         while (left < right) {
             int sum = arr[left] + arr[right];
-            if (sum == 0) {
+            if (min > Math.abs(sum)) {
                 result = new int[]{arr[left], arr[right]};
+                min = Math.abs(sum);
+            }
+            
+            if (sum == 0) {
                 break;
             } else if (sum > 0) {
-                if (min > Math.abs(sum)) {
-                    result = new int[]{arr[left], arr[right]};
-                    min = Math.abs(sum);
-                }
                 right--;
             } else {
-                if (min > Math.abs(sum)) {
-                    result = new int[]{arr[left], arr[right]};
-                    min = Math.abs(sum);
-                }
                 left++;
             }
         }
