@@ -13,15 +13,14 @@ public class Main {
         int k = Integer.parseInt(st.nextToken());
         int c = Integer.parseInt(st.nextToken());
 
-        int[] arr = new int[n * 2];
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(br.readLine());
-            arr[i + n] = arr[i];
         }
 
         Set<Integer> set = new HashSet<>();
         int[] count = new int[d + 1];
-        int max = 0;
+        int result = 0;
         int left = 0;
         int right = 0;
         while (left < n) {
@@ -30,22 +29,22 @@ public class Main {
                 if (count[c] == 0) {
                     size++;
                 }
-                max = Math.max(max, size);
+                result = Math.max(result, size);
 
-                int remove = arr[left];
-                count[remove]--;
-                if (count[remove] == 0) {
-                    set.remove(remove);
+                int leftNum = arr[left % n];
+                count[leftNum]--;
+                if (count[leftNum] == 0) {
+                    set.remove(leftNum);
                 }
                 left++;
             }
 
-            int num = arr[right];
-            count[num]++;
-            set.add(num);
+            int rightNum = arr[right % n];
+            count[rightNum]++;
+            set.add(rightNum);
             right++;
         }
 
-        System.out.println(max);
+        System.out.println(result);
     }
 }
