@@ -19,30 +19,30 @@ public class Main {
             arr[i + n] = arr[i];
         }
 
-        Map<Integer, Integer> map = new HashMap<>();
+        Set<Integer> set = new HashSet<>();
+        int[] count = new int[d + 1];
         int max = 0;
         int left = 0;
         int right = 0;
         while (left < n) {
             if (right - left == k) {
-                int size = map.size();
-                if (!map.containsKey(c)) {
+                int size = set.size();
+                if (count[c] == 0) {
                     size++;
                 }
                 max = Math.max(max, size);
+
                 int remove = arr[left];
-                int count = map.get(remove);
-                if (count == 1) {
-                    map.remove(remove);
-                } else {
-                    map.put(remove, count - 1);
+                count[remove]--;
+                if (count[remove] == 0) {
+                    set.remove(remove);
                 }
                 left++;
             }
 
             int num = arr[right];
-            int count = map.getOrDefault(num, 0);
-            map.put(num, count + 1);
+            count[num]++;
+            set.add(num);
             right++;
         }
 
