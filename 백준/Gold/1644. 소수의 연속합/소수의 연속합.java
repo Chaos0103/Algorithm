@@ -1,75 +1,57 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class Main {
-	
-	private static boolean[] arr;
-	
-	public static void main(String args[]) {
-		FastReader fr = new FastReader();
+    private static int[] getPrimeNumbers(int n) {
+        boolean[] arr = new boolean[n + 1];
+        Arrays.fill(arr, true);
 
-		int n = fr.nextInt();
-		arr = new boolean[n + 1];
-		prime(n);
-		List<Integer> primeNumber = new ArrayList<>();
-		for(int i = 2; i <= n; i++) {
-			if (arr[i]) {
-				primeNumber.add(i);
-			}
-		}
-		
-		int end = 0;
-		int intervalSum = 0;
-		int result = 0;
-		for(int start = 0; start < primeNumber.size(); start++) {
-			while (intervalSum < n && end < primeNumber.size()) {
-				intervalSum += primeNumber.get(end);
-				end++;
-			}
-			if (intervalSum == n) {
-				result++;
-			}
-			intervalSum -= primeNumber.get(start);
-		}
-		
-		System.out.println(result);
-	}
-	
-	private static void prime(int n) {
-		Arrays.fill(arr, true);
-		for(int i = 2; i <= Math.sqrt(n); i++) {
-			if (arr[i]) {
-				int j = 2;
-				while (i * j <= n) {
-					arr[i*j] = false;
-					j++;
-				}
-			}
-		}
-	}
-	
-    //버퍼를 이용한 입력 속도 올리기
-    //해당 메서드도 깃허브에 저장해뒀습니다
-    public static class FastReader {
-        BufferedReader br;
-        StringTokenizer st;
-        public FastReader() { br = new BufferedReader(new InputStreamReader(System.in)); }
-        public FastReader(String s) throws FileNotFoundException { br = new BufferedReader(new FileReader(new File(s))); }
-        String next() {
-            while (st == null || !st.hasMoreElements()) {
-                try { st = new StringTokenizer(br.readLine()); }
-                catch (IOException e) { e.printStackTrace(); }
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (arr[i]) {
+                int j = 2;
+                while (i * j <= n) {
+                    arr[i * j] = false;
+                    j += 1;
+                }
             }
-            return st.nextToken();
         }
-        int nextInt() { return Integer.parseInt(next()); }
-        long nextLong() { return Long.parseLong(next()); }
-        double nextDouble() { return Double.parseDouble(next()); }
-        String nextLine() {
-            String str = "";
-            try { str = br.readLine(); }
-            catch (IOException e) { e.printStackTrace(); }
-            return str;
+
+        return IntStream.rangeClosed(2, n)
+            .filter(i -> arr[i])
+            .toArray();
+    }
+
+    private static int getCount(int[] primeNumbers, int target) {
+        int result = 0;
+        int intervalSum = 0;
+        int end = 0;
+
+        for (int primeNumber : primeNumbers) {
+            while (intervalSum < target && end < primeNumbers.length) {
+                intervalSum += primeNumbers[end];
+                end++;
+            }
+            if (intervalSum == target) {
+                result++;
+            }
+            intervalSum -= primeNumber;
         }
+
+        return result;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int n = Integer.parseInt(br.readLine());
+
+        int[] primeNumbers = getPrimeNumbers(n);
+
+        int count = getCount(primeNumbers, n);
+
+        System.out.println(count);
     }
 }
