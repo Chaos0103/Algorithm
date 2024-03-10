@@ -1,23 +1,21 @@
-import java.util.ArrayList;
-import java.util.List;
-
 class Solution {
-
-    private final List<Integer> results = new ArrayList<>();
-
-    private void dfs(int[] numbers, int depth, int value) {
+    
+    private static int count = 0;
+    
+    private void dfs(int[] numbers, int target, int depth, int result) {
         if (depth == numbers.length) {
-            results.add(value);
+            if (target == result) {
+                count++;
+            }
             return;
         }
-        dfs(numbers, depth + 1, value + numbers[depth]);
-        dfs(numbers, depth + 1, value - numbers[depth]);
+        
+        dfs(numbers, target, depth + 1, result + numbers[depth]);
+        dfs(numbers, target, depth + 1, result - numbers[depth]);
     }
-
+    
     public int solution(int[] numbers, int target) {
-        dfs(numbers, 0, 0);
-        return (int) results.stream()
-            .filter(i -> i == target)
-            .count();
+        dfs(numbers, target, 0, 0);
+        return count;
     }
 }
