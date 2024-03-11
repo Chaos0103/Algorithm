@@ -1,36 +1,32 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-    public int[] solution(int[] progresses, int[] speeds) {
-        Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < progresses.length; i++) {
-            int day = (100 - progresses[i]) / speeds[i];
-            if ((100 - progresses[i]) % speeds[i] > 0) {
-                day++;
-            }
-            queue.add(day);
+    private int calculateWorkDay(int progress, int speed) {
+        int result = (100 - progress) / speed;
+        if ((100 - progress) % speed > 0) {
+            result += 1;
         }
-
-        int count = 1;
-        int prev = queue.poll();
-        List<Integer> answer = new ArrayList<>();
-        while (!queue.isEmpty()) {
-            int day = queue.poll();
-            if (prev >= day) {
-                count++;
-                continue;
+        return result;
+    }
+    
+    public int[] solution(int[] progresses, int[] speeds) {
+        ArrayList<Integer> result = new ArrayList<>();
+        
+        Stack<Integer> s = new Stack<>();
+        
+        for (int i = 0; i < progresses.length; i++) {
+            int workDay = calculateWorkDay(progresses[i], speeds[i]);
+            if (!s.isEmpty() && s.get(0) < workDay) {
+                result.add(s.size());
+                s.clear();
             }
-
-            answer.add(count);
-            count = 1;
-            prev = day;
+            s.add(workDay);
         }
         
-        answer.add(count);
-
-        return answer.stream().mapToInt(i -> i).toArray();
+        result.add(s.size());
+        
+        return result.stream()
+            .mapToInt(Integer::valueOf)
+            .toArray();
     }
 }
