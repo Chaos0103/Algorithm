@@ -2,9 +2,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
-    private static Set<Integer> solution(int[] size) {
+    private static List<Integer> solution(int[] size) {
         Set<Integer> result = new HashSet<>();
         boolean[][][] isVisited = new boolean[size[0] + 1][size[1] + 1][size[2] + 1];
         Queue<int[]> q = new LinkedList<>();
@@ -32,7 +33,7 @@ public class Main {
             }
         }
 
-        return result;
+        return result.stream().sorted().collect(Collectors.toList());
     }
 
     public static void main(String[] args) throws IOException {
@@ -44,11 +45,11 @@ public class Main {
             init[i] = Integer.parseInt(st.nextToken());
         }
 
-        Set<Integer> result = solution(init);
-        ArrayList<Integer> s = new ArrayList<>(result);
-        Collections.sort(s);
-        for (int num : s) {
-            System.out.print(num + " ");
+        List<Integer> result = solution(init);
+        StringBuilder sb = new StringBuilder();
+        for (int num : result) {
+            sb.append(num).append(" ");
         }
+        System.out.println(sb);
     }
 }
