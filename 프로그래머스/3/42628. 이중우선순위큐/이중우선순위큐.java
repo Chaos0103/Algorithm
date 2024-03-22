@@ -1,52 +1,66 @@
-import java.util.Arrays;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Solution {
-    public int[] solution(String[] operations) {
-        PriorityQueue<Integer> max = new PriorityQueue<>((a, b) -> b - a);
-        PriorityQueue<Integer> min = new PriorityQueue<>();
-
-        int size = 0;
-        for (String operation : operations) {
-            StringTokenizer st = new StringTokenizer(operation);
-            String cmd = st.nextToken();
-            int value = Integer.parseInt(st.nextToken());
-
-            if (cmd.equals("I")) {
-                max.add(value);
-                min.add(value);
-                size++;
-                continue;
-            }
-
-            if (size == 0) {
-                continue;
-            }
-
-            if (value == 1) {
-                max.poll();
-            } else {
-                min.poll();
-            }
-            size--;
-
-            if (size == 0) {
-                max.clear();
-                min.clear();
+    private static class DoublePriorityQueue {
+        private int size = 0;
+        private PriorityQueue<Integer> minPq = new PriorityQueue<>();
+        private PriorityQueue<Integer> maxPq = new PriorityQueue<>((a, b) -> b - a);
+        
+        public void add(int elem) {
+            minPq.add(elem);
+            maxPq.add(elem);
+            size++;
+        }
+        
+        public void pollMin() {
+            if (size > 0) {
+                minPq.poll();
+                size--;
+                init();    
             }
         }
-
-        int maxValue = size == 0 ? 0 : max.poll();
-        int minValue = size == 0 ? 0 : min.poll();
-
-        return new int[]{maxValue, minValue};
+        
+        public void pollMax() {
+            if (size > 0) {
+                maxPq.poll();
+                size--;
+                init();
+            }
+        }
+        
+        private void init() {
+            if (size == 0) {
+                minPq = new PriorityQueue<>();
+                maxPq = new PriorityQueue<>((a, b) -> b - a);
+            }
+        }
+        
+        public int[] getResult() {
+            if (size == 0) {
+                return new int[]{0, 0};
+            }
+            return new int[]{maxPq.peek(), minPq.peek()};
+        }
     }
-}
-
-class ASDS {
-    public static void main(String[] args) {
-        int[] solution = new Solution().solution(new String[]{"I 1", "I 2", "D 1", "D -1", "I 3", "I 4", "D 1"});
-        System.out.println(Arrays.toString(solution));
+    
+    public int[] solution(String[] operations) {
+        DoublePriorityQueue dpq = new DoublePriorityQueue();
+        
+        int size = 0;
+        for (String operation : operations) {
+            String[] data = operation.split(" ");
+            if (data[0].equals("I")) {
+                dpq.add(Integer.parseInt(data[1]));
+                continue;
+            }
+            
+            if (Integer.parseInt(data[1]) == 1) {
+                dpq.pollMax();
+            } else if (Integer.parseInt(data[1]) == -1) {
+                dpq.pollMin();
+            }
+        }
+            
+        return dpq.getResult();
     }
 }
