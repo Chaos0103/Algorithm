@@ -1,10 +1,10 @@
 # [level 2] 의상 - 42578 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42578) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42578?language=java) 
 
 ### 성능 요약
 
-메모리: 75.9 MB, 시간: 2.03 ms
+메모리: 72.2 MB, 시간: 0.08 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 02월 28일 22:57:06
+2024년 05월 30일 11:49:17
 
 ### 문제 설명
 
