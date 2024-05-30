@@ -2,22 +2,20 @@ import java.util.*;
 
 class Solution {
     public String solution(String[] participant, String[] completion) {
-        Map<String, Integer> player = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         for (String name : completion) {
-            int count = player.getOrDefault(name, 0);
-            player.put(name, count + 1);
+            int count = map.getOrDefault(name, 0);
+            map.put(name, count + 1);
         }
         
-        String answer = "";
         for (String name : participant) {
-            int count = player.getOrDefault(name, 0);
-            if (count == 0) {
-                answer = name;
-                break;
+            int count = map.getOrDefault(name, 0);
+            if (count < 1) {
+                return name;
             }
-            player.put(name, count - 1);
+            map.put(name, count - 1);
         }
         
-        return answer;
+        return null;
     }
 }
