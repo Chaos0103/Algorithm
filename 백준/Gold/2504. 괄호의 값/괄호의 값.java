@@ -9,19 +9,19 @@ public class Main {
 
         String str = br.readLine();
 
-        Stack<Character> s = new Stack<>();
         int result = 0;
         int value = 1;
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
 
-            if (c == '(') {
-                s.push(c);
+        Stack<Character> s = new Stack<>();
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if (ch == '(') {
                 value *= 2;
-            } else if (c == '[') {
-                s.push(c);
+                s.push(ch);
+            } else if (ch == '[') {
                 value *= 3;
-            } else if (c == ')') {
+                s.push(ch);
+            } else if (ch == ')') {
                 if (s.isEmpty() || s.peek() != '(') {
                     result = 0;
                     break;
@@ -30,7 +30,7 @@ public class Main {
                 }
                 value /= 2;
                 s.pop();
-            } else if (c == ']') {
+            } else if (ch == ']') {
                 if (s.isEmpty() || s.peek() != '[') {
                     result = 0;
                     break;
