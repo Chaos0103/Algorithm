@@ -1,69 +1,67 @@
-import java.util.*;
-
-class Node {
-
-    private int x;
-    private int y;
-
-    public Node(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    public static int n, m;
-    public static int[][] array;
+    private static final int[][] d = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
-    public static final int[] dx = {-1, 1, 0, 0};
-    public static final int[] dy = {0, 0, -1, 1};
+    private static class Point {
+        public int y;
+        public int x;
 
-    public static int bfs(int x, int y) {
-        Queue<Node> q = new LinkedList<>();
-        q.offer(new Node(x, y));
-        while (!q.isEmpty()) {
-            Node node = q.poll();
-            for (int i = 0; i < 4; i++) {
-                int nx = node.getX() + dx[i];
-                int ny = node.getY() + dy[i];
-                if (nx < 0 || n <= nx || ny < 0 || m <= ny) {
-                    continue;
-                }
-                if (array[nx][ny] != 1) {
-                    continue;
-                }
-                array[nx][ny] = array[node.getX()][node.getY()] + 1;
-                q.offer(new Node(nx, ny));
-            }
+        public Point(int y, int x) {
+            this.y = y;
+            this.x = x;
         }
-        return array[n - 1][m - 1];
     }
 
-    public static void main(String[] args) {
+    private static int searchMinimumDirection(int[][] map, int n, int m) {
+        Queue<Point> q = new LinkedList<>();
+        q.add(new Point(0, 0));
 
-        Scanner sc = new Scanner(System.in);
+        while (!q.isEmpty()) {
+            Point point = q.poll();
+            for (int i = 0; i < 4; i++) {
+                int ny = point.y + d[i][1];
+                int nx = point.x + d[i][0];
 
-        n = sc.nextInt();
-        m = sc.nextInt();
-        sc.nextLine();
-        array = new int[n][m];
+                if (!(0 <= ny && ny < n && 0 <= nx && nx < m)) {
+                    continue;
+                }
 
-        for (int i = 0; i < n; i++) {
-            String[] split = sc.nextLine().split("");
-            for (int j = 0; j < m; j++) {
-                array[i][j] = Integer.parseInt(split[j]);
+                if (map[ny][nx] > 1 || map[ny][nx] == 0) {
+                    continue;
+                }
+
+                map[ny][nx] = map[point.y][point.x] + 1;
+                q.add(new Point(ny, nx));
             }
         }
 
-        System.out.println(bfs(0, 0));
+        return map[n - 1][m - 1];
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        int[][] map = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < m; j++) {
+                map[i][j] = line.charAt(j) - '0';
+            }
+        }
+
+        int result = searchMinimumDirection(map, n, m);
+        System.out.println(result);
     }
 }
