@@ -13,22 +13,14 @@ class Solution {
         }
 
         int[][] arr = new int[friends.length][friends.length];
+        int[] scores = new int[friends.length];
         for (String gift : gifts) {
             String[] names = gift.split(" ");
             int give = indexMap.get(names[0]);
             int take = indexMap.get(names[1]);
             arr[give][take]++;
-        }
-
-        int[] scores = new int[friends.length];
-        for (int i = 0; i < arr.length; i++) {
-            int give = 0;
-            int take = 0;
-            for (int j = 0; j < arr[i].length; j++) {
-                give += arr[i][j];
-                take += arr[j][i];
-            }
-            scores[i] = give - take;
+            scores[give]++;
+            scores[take]--;
         }
 
         int answer = 0;
@@ -41,10 +33,8 @@ class Solution {
 
                 if (arr[i][j] > arr[j][i]) {
                     count++;
-                } else if (arr[i][j] == arr[j][i]) {
-                    if (scores[i] > scores[j]) {
-                        count++;
-                    }
+                } else if (arr[i][j] == arr[j][i] && scores[i] > scores[j]) {
+                    count++;
                 }
             }
             answer = Math.max(answer, count);
