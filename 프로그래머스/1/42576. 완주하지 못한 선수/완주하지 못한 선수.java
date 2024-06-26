@@ -10,7 +10,7 @@ class Solution {
         
         for (String name : participant) {
             int count = map.getOrDefault(name, 0);
-            if (count < 1) {
+            if (count <= 0) {
                 return name;
             }
             map.put(name, count - 1);
