@@ -1,61 +1,74 @@
 import java.util.*;
 
 class Solution {
-    private static class Info implements Comparable<Info> {
-        public int id;
-        public String genre;
-        public int play;
-        public int totalPlay;
+    //장르별로 가장 많이 재생된 노래를 두 개씩 모아 베스트 앨범을 출시
+    private static class Genre implements Comparable<Genre> {
+        public String title;
+        public int count;
 
-        public Info(int id, String genre, int play, int totalPlay) {
-            this.id = id;
-            this.genre = genre;
-            this.play = play;
-            this.totalPlay = totalPlay;
+        public Genre(String title, int count) {
+            this.title = title;
+            this.count = count;
         }
 
         @Override
-        public int compareTo(Info o) {
-            if (o.totalPlay == totalPlay) {
-                if (play == o.play) {
-                    return id - o.id;
-                }
-                return o.play - play;
+        public int compareTo(Genre o) {
+            return o.count - count;
+        }
+    }
+
+    private static class Music implements Comparable<Music> {
+        public int seq;
+        public int count;
+
+        public Music(int seq, int count) {
+            this.seq = seq;
+            this.count = count;
+        }
+
+        @Override
+        public int compareTo(Music o) {
+            if (o.count == count) {
+                return seq - o.seq;
             }
-            return o.totalPlay - totalPlay;
+            return o.count - count;
         }
     }
 
     public int[] solution(String[] genres, int[] plays) {
-        Map<String, Integer> genreCountMap = new HashMap<>();
-        Map<String, Integer> countMap = new HashMap<>();
+        Map<String, Integer> total = new HashMap<>();
+        Map<String, List<Music>> map = new HashMap<>();
         for (int i = 0; i < genres.length; i++) {
-            int count = genreCountMap.getOrDefault(genres[i], 0);
-            genreCountMap.put(genres[i], count + plays[i]);
-
-            countMap.put(genres[i], 2);
+            int count = total.getOrDefault(genres[i], 0);
+            total.put(genres[i], count + plays[i]);
+            map.putIfAbsent(genres[i], new ArrayList<>());
+            List<Music> music = map.get(genres[i]);
+            music.add(new Music(i, plays[i]));
+            map.put(genres[i], music);
         }
 
-        PriorityQueue<Info> infos = new PriorityQueue<>();
-        for (int i = 0; i < genres.length; i++) {
-            int totalCount = genreCountMap.get(genres[i]);
-            infos.add(new Info(i, genres[i], plays[i], totalCount));
+        List<Genre> temp = new ArrayList<>();
+        for (String genre : total.keySet()) {
+            temp.add(new Genre(genre, total.get(genre)));
         }
+        Collections.sort(temp);
 
         List<Integer> result = new ArrayList<>();
-        while (!infos.isEmpty()) {
-            Info info = infos.poll();
-            int count = countMap.get(info.genre);
-            if (count == 0) {
+        for (Genre genre : temp) {
+            List<Music> music = map.get(genre.title);
+            if (music.size() < 2) {
+                result.add(music.get(0).seq);
                 continue;
             }
-
-            countMap.put(info.genre, count - 1);
-            result.add(info.id);
+            
+            Collections.sort(music);
+            for (int i = 0; i < 2; i++) {
+                result.add(music.get(i).seq);
+            }
         }
 
         return result.stream()
-            .mapToInt(Integer::intValue)
+            .mapToInt(Integer::valueOf)
             .toArray();
     }
 }
