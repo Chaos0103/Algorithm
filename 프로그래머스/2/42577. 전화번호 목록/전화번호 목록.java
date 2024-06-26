@@ -5,13 +5,14 @@ class Solution {
         Arrays.sort(phoneBook);
         
         Set<String> set = new HashSet<>();
-        for (String phoneNumber : phoneBook) {
-            for (int i = 1; i < phoneNumber.length(); i++) {
-                if (set.contains(phoneNumber.substring(0, i))) {
+        for (String number : phoneBook) {
+            for (int i = 0; i < number.length(); i++) {
+                if (set.contains(number.substring(0, i))) {
                     return false;
                 }
             }
-            set.add(phoneNumber);
+            
+            set.add(number);
         }
         
         return true;
