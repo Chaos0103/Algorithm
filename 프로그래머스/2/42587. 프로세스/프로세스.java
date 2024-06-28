@@ -5,7 +5,7 @@ class Solution {
         public int index;
         public int priority;
         
-        public Process(int index, int priority) {
+        public Process (int index, int priority) {
             this.index = index;
             this.priority = priority;
         }
@@ -13,28 +13,27 @@ class Solution {
     
     public int solution(int[] priorities, int location) {
         Queue<Process> q = new LinkedList<>();
-        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> b - a);
-        
         for (int i = 0; i < priorities.length; i++) {
             q.add(new Process(i, priorities[i]));
-            pq.add(priorities[i]);
         }
         
-        int result = 1;
-        while (!pq.isEmpty()) {
-            int priority = pq.poll();
-            while(!q.isEmpty()) {
-                Process process = q.poll();
-                if (priority == process.priority && location == process.index) {
-                    return result;
-                } else if (priority == process.priority) {
+        Arrays.sort(priorities);
+        
+        int count = 0;
+        int index = priorities.length - 1;
+        while (!q.isEmpty()) {
+            Process p = q.poll();
+            if (p.priority == priorities[index]) {
+                count++;
+                index--;
+                if (p.index == location) {
                     break;
                 }
-                q.add(process);
+            } else {
+                q.add(p);
             }
-            result++;
         }
         
-        return 0;
+        return count;
     }
 }
