@@ -1,29 +1,32 @@
 import java.util.*;
 
 class Solution {
-    private int calculateWorkDay(int progress, int speed) {
-        int result = (100 - progress) / speed;
-        if ((100 - progress) % speed > 0) {
-            result += 1;
-        }
-        return result;
-    }
-    
     public int[] solution(int[] progresses, int[] speeds) {
-        ArrayList<Integer> result = new ArrayList<>();
-        
-        Stack<Integer> s = new Stack<>();
-        
+        Queue<Integer> q = new LinkedList<>();
         for (int i = 0; i < progresses.length; i++) {
-            int workDay = calculateWorkDay(progresses[i], speeds[i]);
-            if (!s.isEmpty() && s.get(0) < workDay) {
-                result.add(s.size());
-                s.clear();
-            }
-            s.add(workDay);
+            q.add(i);
         }
         
-        result.add(s.size());
+        List<Integer> result = new ArrayList<>();
+        
+        int day = 1;
+        int count = 0;
+        while (!q.isEmpty()) {
+            int index = q.peek();
+        
+            if (progresses[index] + speeds[index] * day >= 100) {
+                q.poll();
+                count++;
+            } else {
+                if (count > 0) {
+                    result.add(count);    
+                    count = 0;
+                }
+                day++;
+            }
+        }
+        
+        result.add(count);
         
         return result.stream()
             .mapToInt(Integer::valueOf)
