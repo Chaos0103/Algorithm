@@ -1,20 +1,17 @@
 class Solution {
     public int[] solution(int brown, int yellow) {
-        int[] answer = {};
-        int total = brown + yellow;
-        for (int height = 3; height < 5000; height++) {
-            if (total % height > 0) {
+        for (int h = 1; h <= yellow; h++) {
+            if (yellow % h > 0) {
                 continue;
             }
-
-            int width = total / height;
-            int count = (width * 2 + height * 2) - 4;
-            if (count == brown) {
-                answer = new int[]{width, height};
-                break;
+            
+            int w = yellow / h;
+            int b = (w + h) * 2 + 4;
+            if (b == brown) {
+                return new int[]{w + 2, h + 2};
             }
         }
-
-        return answer;
+    
+        return null;
     }
 }
