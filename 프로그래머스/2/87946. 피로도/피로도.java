@@ -2,34 +2,45 @@ import java.util.*;
 
 class Solution {
     
-    private static int result = 0;
+    private static final List<List<Integer>> comb = new ArrayList<>();
     
-    private void perm(int[][] dungeons, int[][] out, boolean[] isVisited, int depth, int k) {
-        if (depth == dungeons.length) {
-            int count = 0;
-            for (int[] dungeon : out) {
-                if (k < dungeon[0]) {
-                    break;
-                }
-                k -= dungeon[1];
-                count++;
+    private static void dfs(int[] arr, boolean[] isVisited, int depth) {
+        if (depth == arr.length) {
+            List<Integer> temp = new ArrayList<>();
+            for (int elem : arr) {
+                temp.add(elem);
             }
-            result = Math.max(result, count);
+            comb.add(temp);
             return;
         }
         
-        for (int i = 0; i < dungeons.length; i++) {
+        for (int i = 0; i < arr.length; i++) {
             if (!isVisited[i]) {
                 isVisited[i] = true;
-                out[depth] = dungeons[i];
-                perm(dungeons, out, isVisited, depth + 1, k);
+                arr[depth] = i;
+                dfs(arr, isVisited, depth + 1);
                 isVisited[i] = false;
             }
         }
     }
     
     public int solution(int k, int[][] dungeons) {
-        perm(dungeons, new int[dungeons.length][2], new boolean[dungeons.length], 0, k);
+        dfs(new int[dungeons.length], new boolean[dungeons.length], 0);
+        
+        int result = 0;
+        for (List<Integer> arr : comb) {
+            int temp = k;
+            int count = 0;
+            for (int index : arr) {
+                if (temp < dungeons[index][0]) {
+                    break;
+                }
+                
+                temp -= dungeons[index][1];
+                count++;
+            }
+            result = Math.max(result, count);
+        }
         return result;
     }
 }
