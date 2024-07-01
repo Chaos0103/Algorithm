@@ -1,26 +1,29 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 class Solution {
-
-    private static final char[] arr = "AEIOU".toCharArray();
-
-    private List<String> generator(String word) {
-        List<String> words = new ArrayList<>();
-        words.add(word);
-
-        if (word.length() == 5) {
-            return words; 
-        }
-
-        for (char c : arr) {
-            words.addAll(generator(word + c));
+    
+    private static final Set<String> set = new HashSet<>();
+    
+    private void dfs(char[] arr, String ans, int depth) {
+        if (depth == arr.length) {
+            set.add(ans);
+            return;
         }
         
-        return words;
+        set.add(ans);
+        for (int i = 0; i < arr.length; i++) {
+            dfs(arr, ans + arr[i], depth + 1);
+        }
     }
     
     public int solution(String word) {
-        return generator("").indexOf(word);
+        char[] arr = "AEIOU".toCharArray();
+        
+        dfs(arr, "", 0);
+        
+        List<String> list = new ArrayList<>(set);
+        Collections.sort(list);
+        
+        return list.indexOf(word);
     }
 }
