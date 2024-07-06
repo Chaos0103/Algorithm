@@ -1,52 +1,37 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-    private static class Node {
-        public String word;
-        public int count;
-
-        public Node(String word, int count) {
-            this.word = word;
-            this.count = count;
+    
+    private int result;
+    
+    private void dfs(String[] words, boolean[] isVisited, String begin, String target, int depth) {
+        if (begin.equals(target)) {
+            result = Math.min(result, depth);
+            return;
+        }
+        
+        for (int i = 0; i < words.length; i++) {
+            if (!isVisited[i] && isPossible(begin, words[i])) {
+                isVisited[i] = true;
+                dfs(words, isVisited, words[i], target, depth + 1);
+                isVisited[i] = false;
+            }
         }
     }
-
-    private boolean isPossible(String current, String word) {
+    
+    private boolean isPossible(String word, String target) {
         int count = 0;
-        for (int i = 0; i < current.length(); i++) {
-            if (current.charAt(i) != word.charAt(i)) {
+        for (int i = 0; i < word.length(); i++) {
+            if (word.charAt(i) != target.charAt(i)) {
                 count++;
             }
         }
         return count == 1;
     }
-
+    
     public int solution(String begin, String target, String[] words) {
-        int answer = 0;
-        Queue<Node> q = new LinkedList<>();
-        q.add(new Node(begin, 0));
-
-        boolean[] isVisited = new boolean[words.length];
-        while (!q.isEmpty()) {
-            Node node = q.poll();
-            String word = node.word;
-            int count = node.count;
-
-            if (word.equals(target)) {
-                answer = count;
-                break;
-            }
-
-            for (int i = 0; i < words.length; i++) {
-                if (!isVisited[i] && isPossible(word, words[i])) {
-                    isVisited[i] = true;
-                    q.add(new Node(words[i], count + 1));
-                }
-            }
-        }
-
-        return answer;
+        result = 100;
+        dfs(words, new boolean[words.length], begin, target, 0);
+        return result == 100 ? 0 : result;
     }
-
 }
