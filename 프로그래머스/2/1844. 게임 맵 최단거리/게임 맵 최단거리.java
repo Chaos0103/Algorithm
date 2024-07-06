@@ -1,49 +1,57 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-
-    private static final int[][] d = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-
+    
+    private static final int[][] d = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
     private static class Point {
-        public int x;
         public int y;
-
-        public Point(int x, int y) {
-            this.x = x;
+        public int x;
+        public int count;
+        
+        public Point(int y, int x, int count) {
             this.y = y;
+            this.x = x;
+            this.count = count;
         }
     }
-
-    public int solution(int[][] maps) {
+    
+    private int bfs(int[][] maps) {
         int n = maps.length;
         int m = maps[0].length;
-
+        boolean[][] isVisited = new boolean[n][m];
+        
         Queue<Point> q = new LinkedList<>();
-        q.add(new Point(0, 0));
-
+        q.add(new Point(0, 0, 1));
+        isVisited[0][0] = true;
+        
         while (!q.isEmpty()) {
-            Point point = q.poll();
-            int x = point.x;
-            int y = point.y;
-
+            Point p = q.poll();
+            if (p.y == n - 1 && p.x == m - 1) {
+                return p.count;
+            }
+            
             for (int i = 0; i < 4; i++) {
-                int nx = x + d[i][0];
-                int ny = y + d[i][1];
-
-                if (!(0 <= nx && nx < m && 0 <= ny && ny < n)) {
+                int ny = p.y + d[i][0];
+                int nx = p.x + d[i][1];
+                
+                if (!(0 <= ny && ny < n && 0 <= nx && nx < m)) {
                     continue;
                 }
-
-                if (maps[ny][nx] != 1) {
+                
+                if (maps[ny][nx] == 0 || isVisited[ny][nx]) {
                     continue;
                 }
-
-                maps[ny][nx] = maps[y][x] + 1;
-                q.add(new Point(nx, ny));
+                
+                isVisited[ny][nx] = true;
+                q.add(new Point(ny, nx, p.count + 1));
             }
         }
-
-        return maps[n - 1][m - 1] == 1 ? -1 : maps[n - 1][m - 1];
+        
+        return -1;
+    }
+    
+    public int solution(int[][] maps) {
+        return bfs(maps);
     }
 }
