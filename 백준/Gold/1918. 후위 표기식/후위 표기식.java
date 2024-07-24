@@ -1,69 +1,73 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Stack;
 
 public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) {
-        FastReader fr = new FastReader();
-
-        String line = fr.nextLine();
+        String str = br.readLine();
 
         Stack<Character> s = new Stack<>();
-        List<Character> result = new ArrayList<>();
-        for (char ch : line.toCharArray()) {
-            if (Character.isAlphabetic(ch)) {
-                result.add(ch);
-            } else {
-                if (ch == '(') {
-                    s.push(ch);
-                } else if (ch == '*' || ch == '/') {
-                    while (!s.isEmpty() && (s.peek() == '*' || s.peek() == '/')) {
-                        result.add(s.pop());
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if ('A' <= ch && ch <= 'Z') {
+                sb.append(ch);
+                continue;
+            }
+
+            if (ch == '(') {
+                s.push(ch);
+            } else if (ch == ')') {
+                while (!s.isEmpty()) {
+                    char pop = s.pop();
+                    if (pop == '(') {
+                        break;
                     }
-                    s.push(ch);
-                } else if (ch == '+' || ch == '-') {
-                    while (!s.isEmpty() && s.peek() != '(') {
-                        result.add(s.pop());
-                    }
-                    s.push(ch);
-                } else if (ch == ')') {
-                    while (!s.isEmpty() && s.peek() != '(') {
-                        result.add(s.pop());
-                    }
-                    s.pop();
+                    sb.append(pop);
                 }
+            } else if (ch == '+' || ch == '-') {
+                if (s.isEmpty()) {
+                    s.push(ch);
+                    continue;
+                }
+
+                while (!s.isEmpty()) {
+                    char pop = s.pop();
+                    if (pop == '(') {
+                        s.push(pop);
+                        break;
+                    }
+                    sb.append(pop);
+                }
+
+                s.push(ch);
+            } else if (ch == '*' || ch == '/') {
+                if (s.isEmpty()) {
+                    s.push(ch);
+                    continue;
+                }
+
+                while (!s.isEmpty()) {
+                    char pop = s.pop();
+                    if (pop == '(' || pop == '+' || pop == '-') {
+                        s.push(pop);
+                        break;
+                    }
+                    sb.append(pop);
+                }
+
+                s.push(ch);
             }
         }
 
         while (!s.isEmpty()) {
-            result.add(s.pop());
+            sb.append(s.pop());
         }
 
-        for (Character ch : result) {
-            System.out.print(ch);
-        }
-    }
-
-    public static class FastReader {
-        BufferedReader br;
-        StringTokenizer st;
-        public FastReader() { br = new BufferedReader(new InputStreamReader(System.in)); }
-        public FastReader(String s) throws FileNotFoundException { br = new BufferedReader(new FileReader(new File(s))); }
-        String next() {
-            while (st == null || !st.hasMoreElements()) {
-                try { st = new StringTokenizer(br.readLine()); }
-                catch (IOException e) { e.printStackTrace(); }
-            }
-            return st.nextToken();
-        }
-        int nextInt() { return Integer.parseInt(next()); }
-        long nextLong() { return Long.parseLong(next()); }
-        double nextDouble() { return Double.parseDouble(next()); }
-        String nextLine() {
-            String str = "";
-            try { str = br.readLine(); }
-            catch (IOException e) { e.printStackTrace(); }
-            return str;
-        }
+        System.out.println(sb);
     }
 }
