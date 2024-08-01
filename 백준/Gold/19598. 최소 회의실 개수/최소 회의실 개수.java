@@ -1,52 +1,53 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class Main {
-    private static class Schedule implements Comparable<Schedule> {
-        public int startTime;
-        public int endTime;
 
-        public Schedule(int startTime, int endTime) {
-            this.startTime = startTime;
-            this.endTime = endTime;
+    private static class Time implements Comparable<Time> {
+        public int s;
+        public int e;
+
+        public Time(int s, int e) {
+            this.s = s;
+            this.e = e;
         }
 
         @Override
-        public int compareTo(Schedule o) {
-            if (startTime == o.startTime) {
-                return endTime - o.endTime;
+        public int compareTo(Time o) {
+            if (s == o.s) {
+                return e - o.e;
             }
-            return startTime - o.startTime;
+            return s - o.s;
         }
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        List<Schedule> schedules = new ArrayList<>();
 
         int n = Integer.parseInt(br.readLine());
-
+        Time[] times = new Time[n];
         for (int i = 0; i < n; i++) {
-            String[] lines = br.readLine().split(" ");
-            int startTime = Integer.parseInt(lines[0]);
-            int endTime = Integer.parseInt(lines[1]);
-            Schedule schedule = new Schedule(startTime, endTime);
-            schedules.add(schedule);
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            times[i] = new Time(s, e);
         }
 
-        Collections.sort(schedules);
+        Arrays.sort(times);
 
-        pq.add(schedules.get(0).endTime);
-        for (int i = 1; i < schedules.size(); i++) {
-            if (pq.peek() <= schedules.get(i).startTime) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        pq.offer(times[0].e);
+        for (int i = 1; i < n; i++) {
+            if (pq.peek() <= times[i].s) {
                 pq.poll();
             }
-            pq.add(schedules.get(i).endTime);
+            pq.offer(times[i].e);
         }
+
         System.out.println(pq.size());
     }
 }
