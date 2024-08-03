@@ -6,23 +6,26 @@ import java.util.PriorityQueue;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
 
         int n = Integer.parseInt(br.readLine());
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
         for (int i = 0; i < n; i++) {
-            int card = Integer.parseInt(br.readLine());
-            pq.add(card);
+            int x = Integer.parseInt(br.readLine());
+            pq.offer(x);
         }
 
         int result = 0;
         while (pq.size() > 1) {
-            int card1 = pq.poll();
-            int card2 = pq.poll();
-            int sum = card1 + card2;
+            int n1 = pq.poll();
+            int n2 = pq.poll();
+
+            int sum = n1 + n2;
             result += sum;
-            pq.add(sum);
+            pq.offer(sum);
         }
 
         System.out.println(result);
     }
 }
+
