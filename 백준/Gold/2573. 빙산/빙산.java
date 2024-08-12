@@ -1,100 +1,91 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	private static int[][] graph;
-	private static boolean[][] visited;
-	private static int N;
-	private static int M;
-	private static int[] dy = {-1, 1, 0, 0};
-	private static int[] dx = {0, 0, -1, 1};
-	
-	
-	private static void bfs(int i, int j) {
-		visited[i][j] = true;
-		Queue<int[]> q = new LinkedList<>();
-		q.offer(new int[] {i, j});
-		while(!q.isEmpty()) {
-			int y = q.peek()[0];
-			int x = q.peek()[1];
-			q.poll();
-			for(int l=0; l<4; l++) {
-				int yy = y + dy[l];
-				int xx = x + dx[l];
-				if(yy>=0 && yy<N && xx >=0 && xx<M) {
-					if(graph[yy][xx] > 0 && !visited[yy][xx]){
-						q.offer(new int[] {yy, xx});
-						visited[yy][xx] = true;
-					}
-				}
-			}
-		}
-		
-	}
-	
-	public static void main(String[] args) throws IOException {
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		graph = new int[N][M];
-		
-		int yearCnt = 0;
-		
-		for(int i=0; i<N; i++) {
-			st = new StringTokenizer(br.readLine(), " ");
-			for(int j=0; j<M; j++) {
-				graph[i][j] = Integer.parseInt(st.nextToken());
-			}
-		}
+    //1. 사방탐색으로 0의 갯수를 카운팅
+    //2. 0의 갯수를 뺀 값과 0중 큰 값을 저장
+    //3. 모든 좌표의 탐색이 끝나면 DFS로 덩어리 계산
+    private static final int[][] d = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-		boolean flag = true;
-		while(flag) {
-			int cnt = 0;
-			visited = new boolean[N][M];
-			flag = false;
-			for (int i=0; i<N; i++) {
-				for(int j=0; j<M; j++) {
-					if(graph[i][j] > 0 && !visited[i][j]) {
-						flag=true;
-						bfs(i, j);
-						cnt++;
-					}
-				}
-			}
-			
-			if(cnt >= 2) {
-				System.out.println(yearCnt);
-				break;
-			}
-			
-			int[][] updateGraph = new int[N][M];
-			for(int i=0; i<N; i++) {
-				for(int j=0; j<M; j++) {
-					if(graph[i][j] > 0) {
-						int zeroCnt = 0;
-						for(int l=0; l<4; l++) {
-							int yy = dy[l] + i;
-							int xx = dx[l] + j;
-							if(graph[yy][xx] == 0) zeroCnt+=1;
-						}
-						int update = graph[i][j] - zeroCnt;
-						if(update <= 0) update = 0;
-						updateGraph[i][j] = update;
-					}
-				}
-			}
-			yearCnt+=1;
-			graph = updateGraph.clone(); 
-		}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		if(!flag) {
-            System.out.println(0);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        int[][] map = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < m; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+            }
         }
-	}
+
+        int time = 0;
+        int count = 1;
+        while (count == 1) {
+            int[][] temp = new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (map[i][j] > 0) {
+                        temp[i][j] = counter(map, i, j);
+                    }
+                }
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    map[i][j] = Math.max(0, map[i][j] - temp[i][j]);
+                }
+            }
+
+            boolean[][] isVisited = new boolean[n][m];
+            count = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (dfs(map, isVisited, i, j)) {
+                        count++;
+                    }
+                }
+            }
+            time++;
+        }
+
+        System.out.println(count == 0 ? 0 : time);
+    }
+
+    private static boolean dfs(int[][] map, boolean[][] isVisited, int y, int x) {
+        if (!(0 <= y && y < map.length && 0 <= x && x < map[0].length)) {
+            return false;
+        } else if (map[y][x] > 0) {
+            if (isVisited[y][x]) {
+                return false;
+            }
+
+            isVisited[y][x] = true;
+            dfs(map, isVisited, y + 1, x);
+            dfs(map, isVisited, y, x + 1);
+            dfs(map, isVisited, y - 1, x);
+            dfs(map, isVisited, y, x - 1);
+            return true;
+        }
+        return false;
+    }
+
+    private static int counter(int[][] map, int y, int x) {
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            int ny = y + d[i][0];
+            int nx = x + d[i][1];
+
+            if (map[ny][nx] == 0) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
