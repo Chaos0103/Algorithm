@@ -1,44 +1,40 @@
-import java.util.ArrayList;
-import java.util.List;
-
 class Solution {
-
-    //진행 방향을 나타내는 상수
-    private static final int[][] DIRECTION = {{0, 1}, {1, 0}, {-1, -1}};
-
+    
+    private static final int[][] directions = {{1, 0}, {0, 1}, {-1, -1}};
+    
     public int[] solution(int n) {
-        //nxn 배열 생성
-        int total = 0;
+        int[][] arr = new int[n][n];
+        
+        int sum = 0;
         for (int i = 1; i <= n; i++) {
-            total += i;
+            sum += i;
         }
-
-        int[][] triangle = new int[n][n];
-
-        int number = 1; //배열에 담길 숫자
-        int d = 0; //방향 인덱스
-        int x = 0;
-        int y = -1;
-        while (number <= total) {
-            int nx = x + DIRECTION[d % 3][0];
-            int ny = y + DIRECTION[d % 3][1];
-
-            if (n <= nx || n <= ny || triangle[ny][nx] > 0) {
+        
+        int d = 0;
+        int[] p = new int[]{0, 0};
+        for (int i = 1; i <= sum; i++) {
+            arr[p[0]][p[1]] = i;
+            int ny = p[0] + directions[d][0];
+            int nx = p[1] + directions[d][1];
+            if (!(0 <= ny && ny < n && 0 <= nx && nx < n)) {
                 d++;
-                continue;
+            } else if (arr[ny][nx] > 0) {
+                d++;
             }
-
-            triangle[ny][nx] = number++;
-            x = nx;
-            y = ny;
+            d %= 3;
+            p[0] += directions[d][0];
+            p[1] += directions[d][1];
         }
-
-        List<Integer> result = new ArrayList<>();
+        
+        int index = 0;
+        int[] answer = new int[sum];
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i + 1; j++) {
-                result.add(triangle[i][j]);
+            for (int j = 0; j < n; j++) {
+                if (arr[i][j] > 0) {
+                    answer[index++] = arr[i][j];
+                }
             }
         }
-        return result.stream().mapToInt(Integer::intValue).toArray();
+        return answer;
     }
 }
