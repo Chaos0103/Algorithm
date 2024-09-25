@@ -1,36 +1,36 @@
 class Solution {
-
-    private static int zeroCount = 0;
-    private static int oneCount = 0;
-
-    public int[] solution(int[][] arr) {
-        tree(arr, 0, 0, arr.length);
-        return new int[]{zeroCount, oneCount};
-    }
-
-    private int tree(int[][] arr, int x, int y, int size) {
-        if (size == 1) {
-            if (arr[y][x] == 0) {
-                zeroCount++;
-            } else {
-                oneCount++;
-            }
-            return arr[y][x];
+    
+    private static int[] result;
+    
+    private int func(int[][] arr, int y, int x, int n) {
+        if (n == 1) {
+            int num = arr[y][x];
+            result[num]++;
+            return num;
         }
-
-        int a = tree(arr, x, y, size / 2);
-        int b = tree(arr, x + size / 2, y, size / 2);
-        int c = tree(arr, x, y + size / 2, size / 2);
-        int d = tree(arr, x + size / 2, y + size / 2, size / 2);
-
+        
+        int a = func(arr, y, x, n / 2); 
+        int b = func(arr, y + n / 2, x, n / 2);
+        int c = func(arr, y, x + n / 2, n / 2);
+        int d = func(arr, y + n / 2, x + n / 2, n / 2);
+        
         if (a == 0 && b == 0 && c == 0 && d == 0) {
-            zeroCount -= 3;
+            result[0] -= 3;
             return 0;
-        } else if (a == 1 && b == 1 && c == 1 && d == 1) {
-            oneCount -= 3;
+        }
+        
+        if (a == 1 && b == 1 && c == 1 && d == 1) {
+            result[1] -= 3;
             return 1;
         }
-
+        
         return -1;
+    }
+    
+    public int[] solution(int[][] arr) {
+        result = new int[2];
+        func(arr, 0, 0, arr.length);
+        
+        return result;
     }
 }
