@@ -1,10 +1,10 @@
 # [level 1] 가장 많이 받은 선물 - 258712 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258712) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258712#qna) 
 
 ### 성능 요약
 
-메모리: 76.6 MB, 시간: 3.43 ms
+메모리: 133 MB, 시간: 342.72 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 06월 23일 16:47:23
+2024년 09월 29일 15:00:53
 
 ### 문제 설명
 
