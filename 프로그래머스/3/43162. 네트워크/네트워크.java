@@ -1,24 +1,29 @@
 class Solution {
     
-    private void dfs(int[][] computers, boolean[] isVisited, int num) {
-        isVisited[num] = true;
-        for (int i = 0; i < isVisited.length; i++) {
-            if (computers[num][i] == 1 && !isVisited[i]) {
-                dfs(computers, isVisited, i);
+    private void dfs(int[][] computer, boolean[] isVisited, int no) {
+        isVisited[no] = true;
+        for (int i = 0; i < computer[no].length; i++) {
+            if (i == no) {
+                continue;
+            }
+            
+            if (computer[no][i] == 1 && !isVisited[i]) {
+                dfs(computer, isVisited, i);
             }
         }
     }
     
     public int solution(int n, int[][] computers) {
-        int result = 0;
+        int answer = 0;
+        
         boolean[] isVisited = new boolean[n];
         for (int i = 0; i < n; i++) {
             if (!isVisited[i]) {
                 dfs(computers, isVisited, i);
-                result++;
+                answer++;
             }
         }
         
-        return result;
+        return answer;
     }
 }
