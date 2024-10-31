@@ -10,13 +10,11 @@ class Solution {
         int count = 0;
         while (left < right) {
             int calc = people[left] + people[right];
-            if (calc > limit) {
-                right--;
-            } else {
-                right--;
+            if (calc <= limit) {
                 left++;
-                count++;
-            }
+                count++;  
+            } 
+            right--;
         }
         
         return people.length - count;
