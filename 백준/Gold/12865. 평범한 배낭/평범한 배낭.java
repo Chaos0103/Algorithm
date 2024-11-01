@@ -6,31 +6,30 @@ import java.util.StringTokenizer;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
 
-        int n = Integer.parseInt(st.nextToken());
-        int k = Integer.parseInt(st.nextToken());
-
-        int[][] item = new int[n + 1][2];
-
-        for (int i = 1; i <= n; i++) {
+        int[][] bag = new int[N + 1][2];
+        for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            item[i][0] = Integer.parseInt(st.nextToken());
-            item[i][1] = Integer.parseInt(st.nextToken());
+            bag[i][0] = Integer.parseInt(st.nextToken());
+            bag[i][1] = Integer.parseInt(st.nextToken());
         }
 
-        int[][] dp = new int[n + 1][k + 1];
-
-        for (int i = 1; i <= k; i++) { // 무게
-            for (int j = 1; j <= n; j++) { // item
-                dp[j][i] = dp[j - 1][i];
-                if (i - item[j][0] >= 0) {
-                    dp[j][i] = Math.max(dp[j - 1][i], item[j][1] + dp[j - 1][i - item[j][0]]);
+        int[][] dp = new int[N + 1][K + 1];
+        for (int i = 1; i < N + 1; i++) {
+            for (int k = 1; k < K + 1; k++) {
+                int itemWeight = bag[i][0];
+                if (itemWeight > k)
+                    dp[i][k] = dp[i - 1][k];
+                else {
+                    dp[i][k] = Math.max(dp[i - 1][k], bag[i][1] + dp[i - 1][k - itemWeight]);
                 }
             }
         }
 
-
-        System.out.println(dp[n][k]);
+        System.out.println(dp[N][K]);
     }
 }
