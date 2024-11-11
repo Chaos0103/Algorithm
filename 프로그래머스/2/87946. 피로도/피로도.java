@@ -2,11 +2,11 @@ import java.util.*;
 
 class Solution {
     
-    private static final List<List<Integer>> comb = new ArrayList<>();
+    private static final ArrayList<ArrayList<Integer>> comb = new ArrayList<>();
     
     private static void dfs(int[] arr, boolean[] isVisited, int depth) {
         if (depth == arr.length) {
-            List<Integer> temp = new ArrayList<>();
+            ArrayList<Integer> temp = new ArrayList<>();
             for (int elem : arr) {
                 temp.add(elem);
             }
