@@ -1,29 +1,50 @@
+import java.util.*;
+
 class Solution {
     
-    private void dfs(int[][] computer, boolean[] isVisited, int no) {
-        isVisited[no] = true;
-        for (int i = 0; i < computer[no].length; i++) {
-            if (i == no) {
-                continue;
-            }
-            
-            if (computer[no][i] == 1 && !isVisited[i]) {
-                dfs(computer, isVisited, i);
-            }
-        }
-    }
+    private final ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
     
     public int solution(int n, int[][] computers) {
-        int answer = 0;
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
         
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    continue;
+                }
+                if (computers[i][j] == 1) {
+                    graph.get(i).add(j);
+                }
+            }
+        }
+        
+        int answer = 0;
         boolean[] isVisited = new boolean[n];
         for (int i = 0; i < n; i++) {
             if (!isVisited[i]) {
-                dfs(computers, isVisited, i);
+                bfs(i, isVisited);    
                 answer++;
             }
         }
         
         return answer;
+    }
+    
+    private void bfs(int start, boolean[] isVisited) {
+        Queue<Integer> q = new ArrayDeque<>();
+        q.offer(start);
+        isVisited[start] = true;
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            for (int i = 0; i < graph.get(node).size(); i++) {
+                int next = graph.get(node).get(i);
+                if (!isVisited[next]) {
+                    isVisited[next] = true;
+                    q.offer(next);
+                }
+            }
+        }
     }
 }
