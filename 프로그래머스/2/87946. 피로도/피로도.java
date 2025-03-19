@@ -1,46 +1,34 @@
-import java.util.*;
-
 class Solution {
     
-    private static final ArrayList<ArrayList<Integer>> comb = new ArrayList<>();
+    private int result;
     
-    private static void dfs(int[] arr, boolean[] isVisited, int depth) {
-        if (depth == arr.length) {
-            ArrayList<Integer> temp = new ArrayList<>();
-            for (int elem : arr) {
-                temp.add(elem);
+    public int solution(int k, int[][] dungeons) {
+        result = 0;
+        comb(dungeons, new boolean[dungeons.length], new int[dungeons.length], k, 0);
+        return result;
+    }
+    
+    private void comb(int[][] dungeons, boolean[] isVisited, int[] seq, int k, int depth) {
+        if (depth == dungeons.length) {
+            int kt = k;
+            for (int i = 0; i < seq.length; i++) {
+                if (kt < dungeons[seq[i]][0]) {
+                    result = Math.max(result, i);
+                    return;
+                }
+                kt -= dungeons[seq[i]][1];
             }
-            comb.add(temp);
+            result = dungeons.length;
             return;
         }
         
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < dungeons.length; i++) {
             if (!isVisited[i]) {
                 isVisited[i] = true;
-                arr[depth] = i;
-                dfs(arr, isVisited, depth + 1);
+                seq[depth] = i;
+                comb(dungeons, isVisited, seq, k, depth + 1);
                 isVisited[i] = false;
             }
         }
-    }
-    
-    public int solution(int k, int[][] dungeons) {
-        dfs(new int[dungeons.length], new boolean[dungeons.length], 0);
-        
-        int result = 0;
-        for (List<Integer> arr : comb) {
-            int temp = k;
-            int count = 0;
-            for (int index : arr) {
-                if (temp < dungeons[index][0]) {
-                    break;
-                }
-                
-                temp -= dungeons[index][1];
-                count++;
-            }
-            result = Math.max(result, count);
-        }
-        return result;
     }
 }
