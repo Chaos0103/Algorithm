@@ -2,21 +2,29 @@ import java.util.*;
 
 class Solution {
     
-    private static final Set<Integer> set = new HashSet<>();
+    private final Set<Integer> set = new HashSet<>();
     
-    private void comb(String num, boolean[] isUsed, String ans, int depth, int length) {
-        if (depth == length) {
-            int temp = Integer.parseInt(ans);
-            if (isPrime(temp)) {
-                set.add(temp);    
+    public int solution(String numbers) {
+        for (int len = 1; len <= numbers.length(); len++) {
+            comb(numbers, new boolean[numbers.length()], len, 0, "");    
+        }
+        
+        return set.size();
+    }
+    
+    private void comb(String numbers, boolean[] isUsed, int len, int depth, String result) {
+        if (len == depth) {
+            int num = Integer.parseInt(result);
+            if (isPrime(num)) {
+                set.add(num);
             }
             return;
         }
         
-        for (int i = 0; i < num.length(); i++) {
+        for (int i = 0; i < numbers.length(); i++) {
             if (!isUsed[i]) {
                 isUsed[i] = true;
-                comb(num, isUsed, ans + num.substring(i, i + 1), depth + 1, length);
+                comb(numbers, isUsed, len, depth + 1, result + numbers.substring(i, i + 1));
                 isUsed[i] = false;
             }
         }
@@ -32,14 +40,7 @@ class Solution {
                 return false;
             }
         }
+        
         return true;
-    }
-    
-    public int solution(String numbers) {
-        for (int i = 1; i <= numbers.length(); i++) {
-            comb(numbers, new boolean[numbers.length()], "", 0, i);
-        }
-        System.out.println(set);
-        return set.size();
     }
 }
