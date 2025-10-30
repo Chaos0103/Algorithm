@@ -1,41 +1,35 @@
 class Solution {
-
-    private String target;
-    private String[] words;
+    
     private int answer;
-
-    private void dfs(String now, boolean[] isVisited, int depth) {
-        if (target.equals(now)) {
-            answer = depth;
+    
+    public int solution(String begin, String target, String[] words) {
+        answer = 100;
+        dfs(begin, target, words, new boolean[words.length], 0);
+        return answer == 100 ? 0 : answer;
+    }
+    
+    private void dfs(String from, String target, String[] words, boolean[] isUsed, int depth) {
+        if (from.equals(target)) {
+            answer = Math.min(answer, depth);
             return;
         }
-
+        
         for (int i = 0; i < words.length; i++) {
-            if (!isVisited[i] && isPossible(now, words[i])) {
-                isVisited[i] = true;
-                dfs(words[i], isVisited, depth + 1);
-                isVisited[i] = false;
+            if (!isUsed[i] && isPossible(from, words[i])) {
+                isUsed[i] = true;
+                dfs(words[i], target, words, isUsed, depth + 1);
+                isUsed[i] = false;
             }
         }
     }
-
-    private boolean isPossible(String str1, String str2) {
+    
+    private boolean isPossible(String from, String target) {
         int count = 0;
-        for (int i = 0; i < str1.length(); i++) {
-            if (str1.charAt(i) != str2.charAt(i)) {
+        for (int i = 0; i < from.length(); i++) {
+            if (from.charAt(i) != target.charAt(i)) {
                 count++;
             }
         }
         return count == 1;
-    }
-
-    public int solution(String begin, String target, String[] words) {
-        this.target = target;
-        this.words = words;
-        answer = 0;
-
-        dfs(begin, new boolean[words.length], 0);
-        
-        return answer;
     }
 }
